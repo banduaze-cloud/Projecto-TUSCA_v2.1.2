@@ -1,23 +1,3 @@
-# Projecto Tosse - Camota
-**Engenharia do Conhecimento - 5º Ano**
-
-## 📝 Descrição do Projeto
-Este projeto consiste no desenvolvimento de um sistema baseado em conhecimento focado na análise e diagnóstico de tipos de tosse. O objetivo é aplicar técnicas de Engenharia do Conhecimento para organizar informações sobre sintomas e possíveis patologias associadas, utilizando Inteligência Artificial para auxiliar no processo.
-
-## 🚀 Como Executar
-Este projeto foi desenvolvido utilizando Node.js. Para rodar localmente:
-
-1. Instale as dependências:
-   `npm install`
-2. Configure sua chave de API no arquivo `.env.local`:
-   `GEMINI_API_KEY=sua_chave_aqui`
-3. Inicie o projeto:
-   `npm run dev`
-
-## 📂 Estrutura do Repositório
-* `/src`: Códigos fonte do sistema.
-* `README.md`: Documentação principal.
-
-## 👤 Autor
-* **EJRProjetosAcademicos5Ano**
-* Estudante de Engenharia - 5º Ano
+## 🚀 Como testar o projeto
+Descarregue o instalador diretamente aqui: 
+[Baixar APK v1.0.0](https://github.com/EJRProjetosAcademicos5Ano/Projecto-tosse-Camota/releases/latest)
