@@ -345,7 +345,7 @@ const TuscaApp = () => {
 
   if (screen === 'SPLASH') {
     return (
-      <div className="min-h-screen bg-[#FFEB3B] flex flex-col items-center p-6 overflow-y-auto animate-fadeIn relative pb-8">
+      <div className="min-h-screen bg-[#FFEB3B] flex flex-col items-center p-6 overflow-y-auto animate-fadeIn relative pb-4">
         {/* Logo Section */}
         <div className="relative mt-4 mb-4">
           <div className="w-36 h-36 bg-white rounded-full flex items-center justify-center shadow-2xl relative overflow-visible">
@@ -403,7 +403,7 @@ const TuscaApp = () => {
         </div>
 
         {/* Footer Navigation Buttons */}
-        <div className="flex items-center justify-center gap-6 w-full max-w-sm">
+        <div className="flex items-center justify-center gap-6 w-full max-w-sm mb-6">
           <button
             onClick={() => setScreen('CONSENT')}
             className="flex flex-col items-center gap-3 active:scale-95 transition-transform"
@@ -433,6 +433,24 @@ const TuscaApp = () => {
             </div>
             <span className="text-[#4CAF50] font-black text-[10px] uppercase tracking-wider">Download</span>
           </button>
+        </div>
+
+        {/* Project Info Footer */}
+        <div className="text-center space-y-1 pb-2 mt-auto">
+          <p className="text-royal-blue font-black text-[10px] uppercase tracking-widest opacity-80">
+            Todos direitos reservados - 2026
+          </p>
+          <p className="text-royal-blue font-black text-[10px] uppercase tracking-widest opacity-80">
+            FACULDADE ISPI CRISTO REI LUBANGO
+          </p>
+          <div className="flex flex-col">
+            <p className="text-gray-400 font-black text-[8px] uppercase tracking-widest">
+              Projecto: Software da Tosse
+            </p>
+            <p className="text-gray-500 font-bold text-[9px] uppercase tracking-widest">
+              Emanuel Simão • Albino Bandua • Ronaldo Moisés
+            </p>
+          </div>
         </div>
       </div>
     );
