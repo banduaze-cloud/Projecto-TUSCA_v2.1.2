@@ -219,9 +219,13 @@ const TuscaApp = () => {
         if (mediaRecorder.state === 'recording') stopRecording();
       }, 4000);
 
-    } catch (err) {
+    } catch (err: any) {
       console.error("Erro ao acessar microfone:", err);
-      alert("Permissão de microfone negada.");
+      if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+        alert("ERRO: Permissão do microfone negada. Por favor, autorize o acesso ao microfone nas definições do seu navegador ou do telemóvel para realizar o teste.");
+      } else {
+        alert("Erro ao acessar o microfone: " + (err.message || "Verifique as definições do dispositivo."));
+      }
     }
   };
 
@@ -236,9 +240,9 @@ const TuscaApp = () => {
   const analyzeAudio = async (blob: Blob) => {
     setIsAnalyzing(true);
     try {
-      const apiKey = process.env.API_KEY;
+      const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
-      if (!apiKey || apiKey === 'PLACEHOLDER_API_KEY') {
+      if (!apiKey || apiKey === 'COLE_AQUI_A_SUA_CHAVE_DO_GOOGLE_AI_STUDIO') {
         // --- DEMO MODE: Simulated Result ---
         console.warn("API Key não encontrada. Usando modo de demonstração.");
         await new Promise(resolve => setTimeout(resolve, 2000)); // Simula latência
