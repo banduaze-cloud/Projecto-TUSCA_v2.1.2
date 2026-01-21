@@ -19,6 +19,10 @@ import {
   Home,
   Download
 } from 'lucide-react';
+import { Capacitor } from '@capacitor/core';
+import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
+import { Share } from '@capacitor/share';
+import { CapacitorjsPrinter } from 'capacitorjs-printer';
 
 // --- Constants & Types ---
 const PRIMARY_YELLOW = '#FFEB3B';
@@ -152,14 +156,41 @@ const TuscaApp = () => {
     report += `FIM DO RELATÓRIO - Tecnogia TUSCA AI\n`;
 
     const blob = new Blob([report], { type: "text/plain;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `TUSCA_Historico_${new Date().toISOString().split('T')[0]}.txt`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    const fileName = `TUSCA_Historico_${new Date().toISOString().split('T')[0]}.txt`;
+
+    if (Capacitor.isNativePlatform()) {
+      saveAndShareFile(report, fileName);
+    } else {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+  };
+
+  const saveAndShareFile = async (content: string, fileName: string) => {
+    try {
+      const result = await Filesystem.writeFile({
+        path: fileName,
+        data: content,
+        directory: Directory.Documents,
+        encoding: Encoding.UTF8,
+      });
+
+      await Share.share({
+        title: 'Exportar Relatório TUSCA',
+        text: 'Aqui está o seu relatório TUSCA.',
+        url: result.uri,
+        dialogTitle: 'Partilhar Relatório',
+      });
+    } catch (e) {
+      console.error('Error saving or sharing file', e);
+      alert('Erro ao guardar ou partilhar o ficheiro.');
+    }
   };
 
   const exportSingleRecord = (entry: RecordEntry) => {
@@ -186,14 +217,20 @@ const TuscaApp = () => {
     report += `FIM DO RELATÓRIO - Tecnogia TUSCA AI\n`;
 
     const blob = new Blob([report], { type: "text/plain;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `TUSCA_Relatorio_${entry.name.replace(/\s+/g, '_')}.txt`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    const fileName = `TUSCA_Relatorio_${entry.name.replace(/\s+/g, '_')}.txt`;
+
+    if (Capacitor.isNativePlatform()) {
+      saveAndShareFile(report, fileName);
+    } else {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
   };
 
   // --- Audio Recording Logic ---
@@ -988,11 +1025,27 @@ const TuscaApp = () => {
                         <Download size={20} strokeWidth={3} />
                       </button>
                       <button
-                        onClick={() => {
+                        onClick={async () => {
                           setCurrentResult(item);
                           setScreen('RESULT');
-                          // Delay print to allow screen transition
-                          setTimeout(() => window.print(), 500);
+
+                          if (Capacitor.isNativePlatform()) {
+                            try {
+                              const reportHtml = document.querySelector('.print-only')?.innerHTML;
+                              if (reportHtml) {
+                                await CapacitorjsPrinter.printHtml({ value: reportHtml });
+                              } else {
+                                // Fallback to searching by tag or generic
+                                await CapacitorjsPrinter.printHtml({ value: document.body.innerHTML });
+                              }
+                            } catch (e) {
+                              console.error('Error printing', e);
+                              alert('Erro ao imprimir no Android.');
+                            }
+                          } else {
+                            // Delay print to allow screen transition
+                            setTimeout(() => window.print(), 500);
+                          }
                         }}
                         className="flex items-center gap-2 bg-[#00BFA5] text-white px-6 py-4 rounded-2xl shadow-[0_8px_15px_-3px_rgba(0,191,165,0.3)] active:scale-95 transition-all font-black text-xs uppercase min-w-fit"
                       >
