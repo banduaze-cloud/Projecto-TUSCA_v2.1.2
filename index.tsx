@@ -38,6 +38,15 @@ interface PatientData {
   phoneNumber?: string;
 }
 
+const INITIAL_PATIENT_DATA: PatientData = {
+  name: '',
+  age: 0,
+  location: '',
+  gender: 'Masculino',
+  phoneContact: false,
+  phoneNumber: ''
+};
+
 interface RecordEntry extends PatientData {
   id: string;
   timestamp: number;
@@ -65,14 +74,7 @@ const blobToBase64 = (blob: Blob): Promise<string> => {
 // --- App Component ---
 const TuscaApp = () => {
   const [screen, setScreen] = useState<Screen>('SPLASH');
-  const [patient, setPatient] = useState<PatientData>({
-    name: '',
-    age: 0,
-    location: '',
-    gender: 'Masculino',
-    phoneContact: false,
-    phoneNumber: ''
-  });
+  const [patient, setPatient] = useState<PatientData>(INITIAL_PATIENT_DATA);
   const [history, setHistory] = useState<RecordEntry[]>([]);
   const [currentResult, setCurrentResult] = useState<RecordEntry | null>(null);
   const [isRecording, setIsRecording] = useState(false);
@@ -80,6 +82,12 @@ const TuscaApp = () => {
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [editingId, setEditingId] = useState<string | null>(null);
+
+  const startNewDiagnostic = () => {
+    setPatient(INITIAL_PATIENT_DATA);
+    setEditingId(null);
+    setScreen('CONSENT');
+  };
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
@@ -421,11 +429,11 @@ const TuscaApp = () => {
           <p className="text-gray-400 italic text-sm font-semibold mb-6">
             Analisador de Sons de Tosse do Utilizador
           </p>
-          <p className="text-gray-600 font-medium mb-10 leading-relaxed text-sm">
+          <p className="text-gray-600 font-medium mb-4 leading-relaxed text-sm">
             TUSCA utiliza Inteligência Artificial avançada para analisar padrões de sons de tosse e auxiliar no diagnóstico de doenças respiratórias.
           </p>
 
-          <div className="bg-blue-50/70 rounded-[32px] p-6 space-y-5">
+          <div className="bg-blue-50/70 rounded-[32px] p-6 space-y-3">
             <h3 className="text-royal-blue font-extrabold text-sm mb-2">Objetivos do Teste:</h3>
             {[
               "Diagnosticar Bronquite",
@@ -446,7 +454,7 @@ const TuscaApp = () => {
         {/* Footer Navigation Buttons */}
         <div className="flex items-center justify-center gap-6 w-full max-w-sm mb-6">
           <button
-            onClick={() => setScreen('CONSENT')}
+            onClick={startNewDiagnostic}
             className="flex flex-col items-center gap-3 active:scale-95 transition-transform"
           >
             <div className="w-16 h-16 bg-white rounded-full shadow-xl flex items-center justify-center text-royal-blue border-b-4 border-gray-100">
@@ -488,7 +496,7 @@ const TuscaApp = () => {
             <p className="text-gray-400 font-black text-[8px] uppercase tracking-widest">
               Projecto: Software da Tosse
             </p>
-            <p className="text-gray-500 font-bold text-[9px] uppercase tracking-widest">
+            <p className="text-red-600 font-bold text-[9px] uppercase tracking-widest mt-1">
               Emanuel Simão • Albino Bandua • Ronaldo Moisés
             </p>
           </div>
@@ -848,7 +856,12 @@ const TuscaApp = () => {
               <div>
                 <h3 className="text-gray-400 font-bold uppercase text-xs">Utente</h3>
                 <p className="text-xl font-bold">{currentResult.name}</p>
-                <p className="text-gray-600">{currentResult.gender}, {currentResult.age} anos</p>
+                <div className="flex flex-col">
+                  <p className="text-gray-600">{currentResult.gender}, {currentResult.age} anos</p>
+                  {currentResult.phoneContact && currentResult.phoneNumber && (
+                    <p className="text-gray-600 font-bold">Contacto: {currentResult.phoneNumber}</p>
+                  )}
+                </div>
               </div>
               <div>
                 <h3 className="text-gray-400 font-bold uppercase text-xs">Data/Hora</h3>
